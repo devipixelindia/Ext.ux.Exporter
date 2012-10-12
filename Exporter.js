@@ -6,13 +6,12 @@
 Ext.define("Ext.ux.exporter.Exporter", {
     uses: [
         "Ext.ux.exporter.Base64",
-        "Ext.ux.exporter.Button",
         "Ext.ux.exporter.csvFormatter.CsvFormatter",
         "Ext.ux.exporter.excelFormatter.ExcelFormatter"
     ],
 
     statics: {
-        exportAny: function(component, formatter, config) {
+        exportAny: function(component, formatter, title) {
             var func = "export";
             if(!component.is) {
                 func = func + "Store";
@@ -25,51 +24,36 @@ Ext.define("Ext.ux.exporter.Exporter", {
                 component = component.getStore();
             }
 
-            return this[func](component, this.getFormatterByName(formatter), config);
+            return this[func](component, formatter, title);
         },
 
-        /**
-         * Exports a grid, using the .xls formatter by default
-         * @param {Ext.grid.GridPanel} grid The grid to export from
-         * @param {Object} config Optional config settings for the formatter
-         */
-        exportGrid: function(grid, formatter, config) {
-          config = config || {};
+        exportGrid: function(grid, formatter, title) {
           formatter = this.getFormatterByName(formatter);
-
           var columns = Ext.Array.filter(grid.columns, function(col) {
-              return !col.hidden; // && (!col.xtype || col.xtype != "actioncolumn");
+              return !col.hidden && (!col.xtype || col.xtype != "actioncolumn");
           });
-
-          Ext.applyIf(config, {
-            title  : grid.title,
-            columns: columns
-          });
-
+          var config = {
+              title: grid.title ? grid.title : title,
+              columns: columns
+          };
           return formatter.format(grid.store, config);
         },
 
-        exportStore: function(store, formatter, config) {
-           config = config || {};
+        exportStore: function(store, formatter, title) {
            formatter = this.getFormatterByName(formatter);
-
-           Ext.applyIf(config, {
-             columns: store.fields ? store.fields.items : store.model.prototype.fields.items
-           });
-
+           var config = {
+               title: title,
+               columns: store.fields ? store.fields.items : store.model.prototype.fields.items
+           }
            return formatter.format(store, config);
         },
 
-        exportTree: function(tree, formatter, config) {
-          config    = config || {};
+        exportTree: function(tree, formatter, title) {
           formatter = this.getFormatterByName(formatter);
-
-          var store = tree.store || config.store;
-
-          Ext.applyIf(config, {
-            title: tree.title
-          });
-
+          var store = tree.store;
+          var config = {
+              title: tree.title ? tree.title : title
+          }
           return formatter.format(store, config);
         },
 

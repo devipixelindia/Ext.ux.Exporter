@@ -6,14 +6,14 @@
 Ext.define("Ext.ux.exporter.csvFormatter.CsvFormatter", {
     extend: "Ext.ux.exporter.Formatter",
     contentType: 'data:text/csv;base64,',
-    separator: ";",
+    separator: ",",
     extension: "csv",
 
     format: function(store, config) {
         this.columns = config.columns || (store.fields ? store.fields.items : store.model.prototype.fields.items);
         return this.getHeaders() + "\n" + this.getRows(store);
     },
-    getHeaders: function(store) {
+    getHeaders: function() {
         var columns = [], title;
         Ext.each(this.columns, function(col) {
           var title;
@@ -37,15 +37,16 @@ Ext.define("Ext.ux.exporter.csvFormatter.CsvFormatter", {
 
         return rows.join("\n");
     },
-    geCell: function(record, index) {
+    geCell: function(record) {
         var cells = [];
         Ext.each(this.columns, function(col) {
             var name = col.name || col.dataIndex;
             if(name) {
+                var value;
                 if (Ext.isFunction(col.renderer)) {
-                  var value = col.renderer(record.get(name), null, record);
+                  value = col.renderer(record.get(name), null, record);
                 } else {
-                  var value = record.get(name);
+                  value = record.get(name);
                 }
                 cells.push(value);
             }

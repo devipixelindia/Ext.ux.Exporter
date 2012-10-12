@@ -17,7 +17,6 @@ Ext.define("Ext.ux.exporter.excelFormatter.ExcelFormatter", {
     format: function(store, config) {
       var workbook = new Ext.ux.exporter.excelFormatter.Workbook(config);
       workbook.addWorksheet(store, config || {});
-
       return workbook.render();
     }
 });
