@@ -1,3 +1,6 @@
+Add all files not in Example and ServerSide into the Ext.ux folder (typically ExtHome/examples/ux) in a folder called exporter.
+Add the files in ServerSide into an appropriate location for your application.
+
 For an example of the Exporter in use see the example folder.
 
 The key things needed are:
